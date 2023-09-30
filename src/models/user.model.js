@@ -9,7 +9,7 @@ const UserSchema = new Schema({
     type: String,
     require: true,
   },
-  favotite:[String]
+  favorite:[String]
 });
 
 const UserModel = model("users", UserSchema);
