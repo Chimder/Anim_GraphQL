@@ -19,6 +19,7 @@ const MankaSchema = new Schema({
     type: String,
     require: true,
   },
+  describe: String,
   genres: [String],
 });
 
