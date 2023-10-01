@@ -13,19 +13,16 @@ input UserInput {
   email:String!
 }
 input updateUserInput {
-  # email:String
-  # name: String
-  favorite:[String!]!
+  favorite:String
 }
 extend type Query {
   getUser(id: ID!): User
   getUsers: [User!]!
-  isUserArray(email:String!, input: updateUserInput): String
 }
 extend type Mutation {
   createUser(input: UserInput!): String!
   updateUser(email:String!, input: updateUserInput): String
-  updateUserArray(email:String!, input: updateUserInput):User!
+  toggleUserArray(email:String!, input: updateUserInput): Boolean!
   deleteUser(id:ID!): String!
 }
 `;
@@ -38,22 +35,6 @@ export const userResolver = {
     getUsers: async () => {
       return await UserModel.find();
     },
-
-    isUserArray: async (_, { email, input: { favorite } }) => {
-      const isok = await UserModel.findOne(
-        { email: email },
-        { favorite: favorite }
-      );
-      return isok ? true : false
-    }
-    // getMangasByGenres: async (_, { input }) => {
-    //   return await UserModel.find().all("genres", input);
-    // },
-    // getMangasByInput: async (_, { input }) => {
-    //   return await UserModel.aggregate([
-    //     { $match: { name: { $regex: input, $options: "i" } } },
-    //   ]);
-    // },
   },
   Mutation: {
     createUser: async (_, { input: { name, email } }) => {
@@ -67,20 +48,25 @@ export const userResolver = {
       );
       return res.acknowledged;
     },
-    updateUserArray: async (_, { email, input: { favorite } }) => {
-      const isok = await UserModel.findOne(
-        { email: email },
-        { favorite: favorite }
-      );
-      return isok ? true : false
+    toggleUserArray: async (_, { email, input: { favorite } }) => {
+      const res = await UserModel.findOne({ email: email });
+      const filter = await res.favorite.includes(favorite);
 
-      // const res = await UserModel.updateOne(
-      //   { email: email },
-      //   { $push: { favorite: favorite } }
-      // );
+      if (!filter) {
+        await UserModel.updateOne(
+          { email: email },
+          { $push: { favorite: favorite } }
+        );
+      } else {
+        await UserModel.updateOne(
+          { email: email },
+          { $pull: { favorite: favorite } }
+        );
+      }
+      return filter;
     },
     deleteUser: async (_, { id }) => {
-      const res = await UserModel.findByIdAndRemove(id);
+      await UserModel.findByIdAndRemove(id);
       return id;
     },
   },
