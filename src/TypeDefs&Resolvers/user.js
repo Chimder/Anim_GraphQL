@@ -6,11 +6,15 @@ type User {
   name: String!
   email:String!
   favorite:[String]
+  picture: String,
+  local: String,
 }
 
 input UserInput {
   name: String!
   email:String!
+  picture: String,
+  local: String,
 }
 input updateUserInput {
   favorite:String
@@ -21,9 +25,9 @@ extend type Query {
 }
 extend type Mutation {
   createUser(input: UserInput!): String!
-  updateUser(email:String!, input: updateUserInput): String
   toggleUserArray(email:String!, input: updateUserInput): Boolean!
   deleteUser(id:ID!): String!
+  # updateUser(email:String!, input: updateUserInput): String
 }
 `;
 
@@ -37,17 +41,17 @@ export const userResolver = {
     },
   },
   Mutation: {
-    createUser: async (_, { input: { name, email } }) => {
-      const res = await new UserModel({ name, email }).save();
+    createUser: async (_, { input: { name, email, picture, local } }) => {
+      const res = await new UserModel({ name, email, picture, local }).save();
       return res._id;
     },
-    updateUser: async (_, { email, input: { favorite } }) => {
-      const res = await UserModel.updateOne(
-        { email: email },
-        { $push: { favorite: favorite } }
-      );
-      return res.acknowledged;
-    },
+    // updateUser: async (_, { email, input: { favorite } }) => {
+    //   const res = await UserModel.updateOne(
+    //     { email: email },
+    //     { $push: { favorite: favorite } }
+    //   );
+    //   return res.acknowledged;
+    // },
     toggleUserArray: async (_, { email, input: { favorite } }) => {
       const res = await UserModel.findOne({ email: email });
       const filter = await res.favorite.includes(favorite);

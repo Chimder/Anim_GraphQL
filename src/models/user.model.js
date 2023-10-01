@@ -9,7 +9,9 @@ const UserSchema = new Schema({
     type: String,
     require: true,
   },
-  favorite:[String]
+  favorite: [String],
+  picture: String,
+  local: String,
 });
 
 const UserModel = model("users", UserSchema);

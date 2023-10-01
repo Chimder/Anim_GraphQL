@@ -17,7 +17,7 @@ input MangaInput {
   genres:[String]
 }
 extend type Query {
-  getManga(id: ID!): Manga
+  getManga(name: String!): Manga
   getMangas: [Manga!]!
   getMangasByGenres(input: [String]!): [Manga!]!
   getMangasByInput(input: String!): [Manga!]!
@@ -31,8 +31,8 @@ extend type Query {
 
 export const mankaResolver = {
   Query: {
-    getManga: async (_, { id }) => {
-      return await MankaModel.findById(id);
+    getManga: async (_, { name }) => {
+      return await MankaModel.findOne({ name: name });
     },
     getMangas: async () => {
       return await MankaModel.find();
