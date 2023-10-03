@@ -1,3 +1,4 @@
+import { isArray } from "lodash-es";
 import MankaModel from "../models/manga.model.js";
 
 export const typeDef = `#graphql
@@ -14,13 +15,12 @@ type Manga {
 
 input MangaInput {
   input: String
-  genres:[String]
+  genres:String
 }
 extend type Query {
   getManga(name: String!): Manga
-  getMangas: [Manga!]!
-  getMangasByGenres(input: [String]!): [Manga!]!
-  getMangasByInput(input: String!): [Manga!]!
+  getMangasByAll(input:String, genres:[String]): [Manga!]!
+  getTest(input:String, genres:[String]): [Manga!]!
 }
 # extend type Mutation {
 #   createManka(mangaInput: MangaInput): String!
@@ -34,16 +34,29 @@ export const mankaResolver = {
     getManga: async (_, { name }) => {
       return await MankaModel.findOne({ name: name });
     },
-    getMangas: async () => {
-      return await MankaModel.find();
+    getTest: async (_, { input, genres }) => {
+      return await MankaModel.find({
+        name: { $regex: input, $options: "i" },
+      }).all("genres", genres);
     },
-    getMangasByGenres: async (_, { input }) => {
-      return await MankaModel.find().all("genres", input);
-    },
-    getMangasByInput: async (_, { input }) => {
-      return await MankaModel.aggregate([
-        { $match: { name: { $regex: input, $options: "i" } } },
-      ]);
+
+    getMangasByAll: async (_, { input, genres }) => {
+      console.log(genres, "genres");
+      console.log(input, "input");
+      if (input && genres) {
+        return await MankaModel.find({
+          name: { $regex: input, $options: "i" },
+        }).all("genres", genres);
+      }
+      if (genres) {
+        return await MankaModel.find().all("genres", genres);
+      } else if (input) {
+        return await MankaModel.aggregate([
+          { $match: { name: { $regex: input, $options: "i" } } },
+        ]);
+      } else {
+        return await MankaModel.find();
+      }
     },
   },
 };
