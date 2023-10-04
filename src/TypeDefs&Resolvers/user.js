@@ -26,7 +26,7 @@ extend type Query {
 }
 extend type Mutation {
   createUser(input:UserInput!): String!
-  toggleUserArray(email:String!, input: updateUserInput): Boolean!
+  toggleUserArray(email:String!, favorite:String): Boolean!
   deleteUser(id:ID!): String!
   signUp(input:UserInput): String
 }
@@ -53,7 +53,7 @@ export const userResolver = {
     //   );
     //   return res.acknowledged;
     // },
-    toggleUserArray: async (_, { email, input: { favorite } }) => {
+    toggleUserArray: async (_, { email, favorite }) => {
       const res = await UserModel.findOne({ email: email });
       const filter = await res.favorite.includes(favorite);
 
