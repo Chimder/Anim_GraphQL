@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import UserModel from "../models/user.model.js";
 
 export const typeDef = `#graphql
@@ -11,7 +12,7 @@ type User {
 }
 
 input UserInput {
-  name: String!
+  name: String
   email:String!
   picture: String,
   local: String,
@@ -24,10 +25,10 @@ extend type Query {
   getUsers: [User!]!
 }
 extend type Mutation {
-  createUser(input: UserInput!): String!
+  createUser(input:UserInput!): String!
   toggleUserArray(email:String!, input: updateUserInput): Boolean!
   deleteUser(id:ID!): String!
-  # updateUser(email:String!, input: updateUserInput): String
+  signUp(input:UserInput): String
 }
 `;
 
@@ -69,6 +70,18 @@ export const userResolver = {
       }
       return filter;
     },
+
+    signUp: async (_, { input: { name, email, picture, local } }) => {
+      const isUserExists = await UserModel.findOne({ email: email });
+      console.log(isUserExists, "isUser");
+      if (isUserExists) {
+        console.log("user already reg");
+      } else {
+        const res = await new UserModel({ name, email, picture, local }).save();
+        return res._id;
+      }
+    },
+
     deleteUser: async (_, { id }) => {
       await UserModel.findByIdAndRemove(id);
       return id;

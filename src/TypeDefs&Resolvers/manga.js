@@ -41,8 +41,6 @@ export const mankaResolver = {
     },
 
     getMangasByAll: async (_, { input, genres }) => {
-      console.log(genres, "genres");
-      console.log(input, "input");
       if (input && genres) {
         return await MankaModel.find({
           name: { $regex: input, $options: "i" },
