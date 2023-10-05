@@ -9,8 +9,15 @@ type Manga {
   imgHeader: String!
   author: String!
   status: String!
+  Published: String
   genres: [String!]!
   describe: String!
+  chapters:[Chapter]
+}
+
+type Chapter{
+  name:String
+  img:[String]
 }
 
 input MangaInput {

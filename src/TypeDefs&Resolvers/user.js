@@ -1,5 +1,6 @@
 import { GraphQLError } from "graphql";
 import UserModel from "../models/user.model.js";
+import MankaModel from "../models/manga.model.js";
 
 export const typeDef = `#graphql
 type User {
@@ -21,8 +22,9 @@ input updateUserInput {
   favorite:String
 }
 extend type Query {
-  getUser(id: ID!): User
+  getUser(email: String!): User
   getUsers: [User!]!
+  getUserFavoriteList(email:String!):[Manga]!
 }
 extend type Mutation {
   createUser(input:UserInput!): String!
@@ -34,8 +36,13 @@ extend type Mutation {
 
 export const userResolver = {
   Query: {
-    getUser: async (_, { id }) => {
-      return await UserModel.findById(id);
+    getUserFavoriteList: async (_, { email }) => {
+      const user = await UserModel.findOne({ email: email });
+      const userManka = await MankaModel.find({ name: user.favorite });
+      return userManka;
+    },
+    getUser: async (_, { email }) => {
+      return await UserModel.findOne({ email: email });
     },
     getUsers: async () => {
       return await UserModel.find();
