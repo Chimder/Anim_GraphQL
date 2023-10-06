@@ -22,7 +22,6 @@ const ChapterSchema = new Schema({
   name: String,
   img: [String],
 });
-
 const ChapterModel = model("chapters", ChapterSchema);
 
 const MankaModel = model("mankas", MankaSchema);
