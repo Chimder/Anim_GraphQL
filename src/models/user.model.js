@@ -12,7 +12,16 @@ const UserSchema = new Schema({
   favorite: [String],
   picture: String,
   local: String,
+  lastRead: {
+    type: Schema.Types.Array,
+    ref: "lastRead",
+  },
 });
 
+const UserLastReadSchema = new Schema({
+  name: String,
+  chapter: Number,
+});
+const UserLastRead = model("lastRead", UserLastReadSchema);
 const UserModel = model("users", UserSchema);
 export default UserModel;

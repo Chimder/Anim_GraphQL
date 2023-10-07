@@ -16,6 +16,7 @@ type Manga {
 }
 
 type Chapter{
+  chapter: Int
   name:String
   img:[String]
 }
@@ -26,14 +27,10 @@ input MangaInput {
 }
 extend type Query {
   getManga(name: String!): Manga
+  getChapter(name: String!, chapter:Int!): Chapter
   getMangasByAll(input:String, genres:[String]): [Manga!]!
   getTest(input:String, genres:[String]): [Manga!]!
 }
-# extend type Mutation {
-#   createManka(mangaInput: MangaInput): String!
-#   updateManka(ID:ID!, mangaInput: MangaInput): String!
-#   deleteManka(ID:ID!): String!
-# }
 `;
 
 export const mankaResolver = {
@@ -41,10 +38,12 @@ export const mankaResolver = {
     getManga: async (_, { name }) => {
       return await MankaModel.findOne({ name: name });
     },
-    getTest: async (_, { input, genres }) => {
-      return await MankaModel.find({
-        name: { $regex: input, $options: "i" },
-      }).all("genres", genres);
+
+    getChapter: async (_, { name, chapter }) => {
+      const chap = await MankaModel.findOne({ name: name });
+      const chapfilt = await chap.chapters.find((e) => e.chapter == chapter);
+      console.log(chapfilt)
+      return chapfilt;
     },
 
     getMangasByAll: async (_, { input, genres }) => {

@@ -19,6 +19,7 @@ const MankaSchema = new Schema({
 });
 
 const ChapterSchema = new Schema({
+  chapter: Number,
   name: String,
   img: [String],
 });

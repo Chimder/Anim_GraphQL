@@ -10,6 +10,17 @@ type User {
   favorite:[String]
   picture: String,
   local: String,
+  lastRead: [LastRead]
+}
+
+type LastRead{
+  name: String,
+  chapter: Int,
+}
+
+input LastReadInput{
+  name: String,
+  chapter: Int,
 }
 
 input UserInput {
@@ -31,6 +42,8 @@ extend type Mutation {
   toggleUserArray(email:String!, favorite:String): Boolean!
   deleteUser(id:ID!): String!
   signUp(input:UserInput): String
+
+  addLastRead(email:String!, input:LastReadInput): String
 }
 `;
 
@@ -60,6 +73,31 @@ export const userResolver = {
     //   );
     //   return res.acknowledged;
     // },
+
+    addLastRead: async (_, { email, input: { name, chapter } }) => {
+      const res = await UserModel.findOne({ email: email });
+      const filter = await res.lastRead.some((obj) => obj.name == name);
+      console.log(filter);
+
+      if (filter) {
+        await UserModel.updateOne(
+          { email: email, "lastRead.name": name },
+          {
+            $set: {
+              "lastRead.$.chapter": chapter,
+            },
+          }
+          // { lastRead: { name: name, chapter: chapter } }
+        );
+      } else {
+        await UserModel.updateOne(
+          { email: email },
+          { $push: { lastRead: { name: name, chapter: chapter } } }
+        );
+      }
+      return filter;
+    },
+
     toggleUserArray: async (_, { email, favorite }) => {
       const res = await UserModel.findOne({ email: email });
       const filter = await res.favorite.includes(favorite);
