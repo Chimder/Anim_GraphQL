@@ -77,7 +77,6 @@ export const userResolver = {
     addLastRead: async (_, { email, input: { name, chapter } }) => {
       const res = await UserModel.findOne({ email: email });
       const filter = await res.lastRead.some((obj) => obj.name == name);
-      console.log(filter);
 
       if (filter) {
         await UserModel.updateOne(
@@ -87,7 +86,6 @@ export const userResolver = {
               "lastRead.$.chapter": chapter,
             },
           }
-          // { lastRead: { name: name, chapter: chapter } }
         );
       } else {
         await UserModel.updateOne(
