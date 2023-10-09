@@ -9,6 +9,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { typeDef as Manga, mankaResolver } from "./TypeDefs&Resolvers/manga.js";
 import { typeDef as User, userResolver } from "./TypeDefs&Resolvers/user.js";
 
+const port = process.env.NODE_ENV === "development" ? 5555 : process.env.PORT;
 const MONGODB = process.env.MONGODB_URL;
 
 const Query = `#graphql
@@ -38,8 +39,7 @@ mongoose
   .then(() => {
     console.log("MongoDB Connected");
     return startStandaloneServer(server, {
-      // listen: { port: process.env.PORT },
-      listen: { port: 5555 },
+      listen: { port },
     });
   })
   .then((res) => {
