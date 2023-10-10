@@ -43,5 +43,6 @@ mongoose
     });
   })
   .then((res) => {
+    console.log(process.env.NODE_ENV);
     console.log(`Server running at ${res.url}`);
   });
