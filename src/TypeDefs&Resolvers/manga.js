@@ -29,7 +29,7 @@ extend type Query {
   getManga(name: String!): Manga
   getChapter(name: String!, chapter:Int!): Chapter
   getMangasByAll(input:String, genres:[String] skip:Int, limit:Int): [Manga!]!
-  getTest(input:String, genres:[String]): [Manga!]!
+  # getTest(input:String, genres:[String]): [Manga!]!
 }
 `;
 
@@ -45,6 +45,34 @@ export const mankaResolver = {
       console.log(chapfilt);
       return chapfilt;
     },
+    // getTest: async (_, { input, genres, skip, limit }) => {
+    //   if (input && genres) {
+    //     const res = await MankaModel.find({
+    //       name: { $regex: input, $options: "i" },
+    //     }).all("genres", genres);
+    //     // .skip(skip)
+    //     // .limit(limit);
+    //     console.log(res.length, "res");
+    //   }
+    //   if (genres) {
+    //     const res1 = await MankaModel.find().all("genres", genres);
+    //     // .skip(skip)
+    //     // .limit(limit);
+    //     console.log(res1.length, "res1");
+    //   } else if (input) {
+    //     const res2 = await MankaModel.aggregate([
+    //       { $match: { name: { $regex: input, $options: "i" } } },
+    //     ]);
+    //     console.log(res2.length, "res2");
+    //     // .skip(skip)
+    //     // .limit(limit);
+    //   } else {
+    //     const res3 = await MankaModel.find();
+    //     console.log(res3.length, "res3");
+    //     return res3.length, res3;
+    //     // .skip(skip).limit(limit);
+    //   }
+    // },
 
     getMangasByAll: async (_, { input, genres, skip, limit }) => {
       if (input && genres) {
