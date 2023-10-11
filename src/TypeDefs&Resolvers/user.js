@@ -116,9 +116,7 @@ export const userResolver = {
 
     signUp: async (_, { input: { name, email, picture, local } }) => {
       const isUserExists = await UserModel.findOne({ email: email });
-      console.log(isUserExists, "isUser");
       if (isUserExists) {
-        console.log("user already reg");
       } else {
         const res = await new UserModel({ name, email, picture, local }).save();
         return res._id;

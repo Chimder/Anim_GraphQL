@@ -42,7 +42,6 @@ export const mankaResolver = {
     getChapter: async (_, { name, chapter }) => {
       const chap = await MankaModel.findOne({ name: name });
       const chapfilt = await chap.chapters.find((e) => e.chapter == chapter);
-      console.log(chapfilt);
       return chapfilt;
     },
     // getTest: async (_, { input, genres, skip, limit }) => {
