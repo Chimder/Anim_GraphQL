@@ -6,12 +6,6 @@ const MankaSchema = new Schema({
   imgHeader: String,
   describe: String,
   genres: [String],
-  author: String,
-  Published: Date,
-  status: String,
-  // chapters: {
-  //   type: [Mixed],
-  // },
   chapters: {
     type: Schema.Types.Array,
     ref: "chapters",

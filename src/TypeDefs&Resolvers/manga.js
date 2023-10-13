@@ -7,9 +7,6 @@ type Manga {
   name: String!
   img:String!
   imgHeader: String!
-  author: String!
-  status: String!
-  Published: String
   genres: [String!]!
   describe: String!
   chapters:[Chapter]
