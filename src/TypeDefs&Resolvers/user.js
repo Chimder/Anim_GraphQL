@@ -66,13 +66,6 @@ export const userResolver = {
       const res = await new UserModel({ name, email, picture, local }).save();
       return res._id;
     },
-    // updateUser: async (_, { email, input: { favorite } }) => {
-    //   const res = await UserModel.updateOne(
-    //     { email: email },
-    //     { $push: { favorite: favorite } }
-    //   );
-    //   return res.acknowledged;
-    // },
 
     addLastRead: async (_, { email, input: { name, chapter } }) => {
       const res = await UserModel.findOne({ email: email });
